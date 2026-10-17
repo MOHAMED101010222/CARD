@@ -210,7 +210,7 @@ function build(d){
   if(d.web)act(ac,'globe','الموقع',url(d.web));
   if(d.ad)act(ac,'pin','العنوان','https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.ad));
   if(ac.children.length)w.appendChild(rv(ac));
-  if(d.ab){var ab=el('div','sec');ab.appendChild(el('div','about',d.ab));w.appendChild(rv(ab))}
+  if(d.ab&&/[\w\u0600-\u06FF]/.test(d.ab)){var ab=el('div','sec');ab.appendChild(el('div','about',d.ab));w.appendChild(rv(ab))}
   var rows=el('div','rows'),n0=0;
   if(d.ph){tile(rows,'phone','موبايل',d.ph,'tel:'+digits(d.ph));n0++}
   if(d.wa){tile(rows,'chat','واتساب',d.wa,wa(d.wa));n0++}
