@@ -2681,7 +2681,9 @@ function build(d){
   if(ac.children.length)w.appendChild(rv(ac));
   if(d.ab&&/[\w\u0600-\u06FF]/.test(d.ab)){var ab=el('div','sec');ab.appendChild(el('div','about',d.ab));w.appendChild(rv(ab))}
   var rows=el('div','rows'),n0=0;
+  if(d.t){tile(rows,'job','الوظيفة',d.t);n0++}
   if(d.wk){tile(rows,'job','مكان العمل',d.wk);n0++}
+  if(d.wad){tile(rows,'pin','عنوان العمل',d.wad,'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.wad));n0++}
   if(d.ph){tile(rows,'phone','موبايل',d.ph,'tel:'+digits(d.ph));n0++}
   if(d.wa){tile(rows,'chat','واتساب',d.wa,wa(d.wa));n0++}
   if(d.em){tile(rows,'mail','البريد الإلكتروني',d.em,'mailto:'+d.em);n0++}
