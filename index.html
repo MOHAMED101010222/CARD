@@ -25,7 +25,37 @@ svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-l
 .lgn h2{margin:0 0 8px;font-size:24px}.lgn p{margin:0 0 22px;opacity:.7;font-size:14px;line-height:1.8}
 .lgn input{display:block;width:100%;box-sizing:border-box;margin:0 0 12px;padding:14px 16px;border-radius:14px;font:inherit;font-size:16px;color:inherit;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);outline:0;text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .lgn input:focus{border-color:rgb(var(--a,255,200,70));box-shadow:0 0 0 3px rgba(var(--a,255,200,70),.2)}
-.lgn button{width:100%;padding:14px;border:0;border-radius:14px;font:inherit;font-size:16px;font-weight:700;color:#06101c;cursor:pointer;background:linear-gradient(135deg,rgb(var(--a,255,200,70)),rgb(var(--c,255,236,160)))}
+/* ===== شاشة الدخول: خلفية + أزرار زجاجية شفافة + عين ===== */
+.lgbg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:radial-gradient(120% 80% at 50% 0%,#0e1a33 0%,#070b16 55%,#04060d 100%)}
+.lgbg .ph{position:absolute;inset:-16px;background-size:cover;background-position:center;opacity:0;transition:opacity 1s}
+.lgbg .ph.on{opacity:1}
+.lgbg .orb{position:absolute;border-radius:50%;will-change:transform}
+.lgbg .o1{width:120vmax;height:120vmax;left:-70vmax;top:-72vmax;background:radial-gradient(circle,rgba(0,229,255,.34),transparent 62%);animation:lgo1 19s ease-in-out infinite alternate}
+.lgbg .o2{width:110vmax;height:110vmax;right:-66vmax;bottom:-64vmax;background:radial-gradient(circle,rgba(124,92,255,.42),transparent 62%);animation:lgo2 23s ease-in-out infinite alternate}
+.lgbg .o3{width:70vmax;height:70vmax;left:-10vmax;top:42%;background:radial-gradient(circle,rgba(255,200,70,.14),transparent 62%);animation:lgo3 27s ease-in-out infinite alternate}
+@keyframes lgo1{to{transform:translate(14vmax,10vmax) scale(1.12)}}
+@keyframes lgo2{to{transform:translate(-12vmax,-9vmax) scale(1.1)}}
+@keyframes lgo3{to{transform:translate(18vmax,-6vmax) scale(.9)}}
+.lgbg .grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(75% 60% at 50% 38%,#000,transparent 82%);mask-image:radial-gradient(75% 60% at 50% 38%,#000,transparent 82%)}
+.lgbg .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,6,12,.12),rgba(4,6,12,.5))}
+.lgbg.hasph .ov{background:linear-gradient(180deg,rgba(4,6,12,.4),rgba(4,6,12,.82))}
+.lgbg .pt{position:absolute;border-radius:50%;background:#c9f8ff;box-shadow:0 0 8px 2px rgba(0,229,255,.65);opacity:0;animation:lgpt linear infinite}
+@keyframes lgpt{0%{transform:translateY(0);opacity:0}15%{opacity:.85}100%{transform:translateY(-112vh);opacity:0}}
+@media (prefers-reduced-motion:reduce){.lgbg *{animation:none!important}}
+.lgn h2,.lgn p{text-shadow:0 2px 14px rgba(0,0,0,.6)}.lgn p{opacity:.85}
+.lgn input{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.26);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 6px 18px rgba(0,0,0,.25);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
+.lgn input::placeholder{color:rgba(255,255,255,.42)}
+.lgn input:-webkit-autofill{-webkit-text-fill-color:#fff;transition:background-color 99999s}
+.lgn input:focus{border-color:rgba(var(--a,0,229,255),.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 0 3px rgba(var(--a,0,229,255),.2),0 6px 18px rgba(0,0,0,.25)}
+.lgn .pw{position:relative;margin:0 0 12px}
+.lgn .pw input{margin:0;padding:14px 50px}
+.lgn .eye{position:absolute;inset-inline-end:7px;top:50%;transform:translateY(-50%);width:38px;height:38px;padding:0;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:rgba(255,255,255,.72);cursor:pointer}
+.lgn .eye svg{width:22px;height:22px}
+.lgn .eye.on{color:rgb(var(--a,0,229,255));filter:drop-shadow(0 0 6px rgba(var(--a,0,229,255),.7))}
+.lgn .eye:active{background:rgba(255,255,255,.12)}
+.lgn .lg-go{width:100%;padding:14px;border-radius:14px;font:inherit;font-size:16px;font-weight:700;color:var(--tx);cursor:pointer;background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(14px) saturate(1.5);backdrop-filter:blur(14px) saturate(1.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.2),0 8px 22px rgba(0,0,0,.32);text-shadow:0 1px 8px rgba(0,0,0,.45);transition:transform .15s,border-color .2s}
+.lgn .lg-go:active{transform:scale(.97);border-color:rgba(var(--a,0,229,255),.7)}
+.lgn .lg-er{margin:12px 0 0}
 .lgn button:disabled{opacity:.6}.lgn .lg-er{min-height:22px;margin:0 0 12px;color:#ff8a80;font-size:14px}
 .wrap .act .b.x-wa{color:#25d366}.wrap .act .b.x-mail{color:#ffd45e}.wrap .act .b.x-wa svg,.wrap .act .b.x-mail svg{filter:drop-shadow(0 0 7px currentColor) drop-shadow(0 0 2px currentColor)}.wrap .act .b.x-mail svg{stroke-width:2.2}
 .wrap .pill{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.28);-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 18px rgba(0,0,0,.28)}
@@ -127,6 +157,13 @@ h1{margin:0 0 6px;font-size:27px;line-height:1.3;font-weight:800;word-break:brea
 .qa{display:flex;gap:8px}
 .qa a,.qa button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px 8px;border-radius:10px;border:1px solid rgba(var(--a),.4);background:rgba(var(--a),.12);color:var(--tx);font:600 14px "Segoe UI",Tahoma,Arial,sans-serif;text-decoration:none;cursor:pointer}
 .qa svg{width:17px;height:17px}
+/* ===== زرار الخروج (فوق شمال) + نافذة التأكيد ===== */
+.lo-btn{position:absolute;top:calc(env(safe-area-inset-top,0px) + 27px);left:16px;z-index:5;display:flex;align-items:center;gap:6px;height:36px;padding:0 13px;border-radius:12px;font:600 13px "Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;color:var(--tx);cursor:pointer;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.24);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.lo-btn svg{width:16px;height:16px;color:#ff9a90}
+.lo-btn:active{transform:scale(.95)}
+.qc.lo{max-width:320px}
+.lo-p{margin:0 0 16px;font-size:14px;line-height:1.8;opacity:.78}
+.qa .dg{border-color:rgba(255,120,110,.6);background:rgba(255,90,95,.14);color:#ffb4ac}
 </style></head><body>
 <div id="app"></div><div class="lb" id="lb"><img alt=""></div><div class="toast" id="toast"></div>
 <script>//---------------------------------------------------------------------
@@ -2450,7 +2487,10 @@ var IC={
  moon:'<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z"/><path d="M17 4v4M15 6h4"/>',
  cross:'<path d="M12 3v18M6.5 8.5h11"/>',
  job:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
- qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 17v4"/>'
+ qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 17v4"/>',
+ eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+ eyeoff:'<path d="M3 3l18 18"/><path d="M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a10 10 0 0 0 4.4-1M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+ logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/>'
 };
 function svg(n,c){var s=document.createElementNS(NS,'svg');s.setAttribute('viewBox','0 0 24 24');if(c)s.setAttribute('class',c);s.innerHTML=IC[n]||IC.link;return s}
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
@@ -2465,23 +2505,53 @@ async function openBox(u,user,pass){
  var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:iv},key,ct);
  return JSON.parse(await inflate(new Uint8Array(pt)));
 }
+var LOGIN_BG='';   /* اختياري: رابط https لصورة خلفية شاشة الدخول (فاضي = خلفية متحركة جاهزة) */
+var SK='tx_sess_v1',AUTHED=false,RESTORED=false;
+function sessGet(){try{var s=JSON.parse(localStorage.getItem(SK)||'null');return(s&&s.h&&s.d&&s.d.n)?s:null}catch(e){return null}}
+function sessSet(h,d){try{localStorage.setItem(SK,JSON.stringify({h:h,d:d,t:Date.now()}))}catch(e){}}
+function sessClear(){try{localStorage.removeItem(SK)}catch(e){}}
+function loginBg(){
+ var bg=el('div','lgbg'),has=LOGIN_BG&&LOGIN_BG.indexOf('https://')===0;
+ if(has){bg.classList.add('hasph');var ph=el('div','ph');bg.appendChild(ph);var im=new Image();im.referrerPolicy='no-referrer';im.onload=function(){ph.style.backgroundImage='url("'+LOGIN_BG+'")';requestAnimationFrame(function(){ph.classList.add('on')})};im.src=LOGIN_BG}
+ ['orb o1','orb o2','orb o3','grid','ov'].forEach(function(c){bg.appendChild(el('div',c))});
+ for(var i=0;i<12;i++){var p=el('i','pt'),s=(2+Math.random()*2.2).toFixed(1);p.style.cssText='left:'+(Math.random()*100).toFixed(1)+'%;bottom:-10px;width:'+s+'px;height:'+s+'px;animation-duration:'+(10+Math.random()*10).toFixed(1)+'s;animation-delay:-'+(Math.random()*16).toFixed(1)+'s';bg.appendChild(p)}
+ return bg}
 function askLogin(u){return new Promise(function(res){
- var app=$('app');app.textContent='';
+ var app=$('app');app.textContent='';app.appendChild(loginBg());
  var box=el('div','lgn');box.appendChild(el('div','lg-ic','🔐'));box.appendChild(el('h2',null,'تسجيل الدخول'));box.appendChild(el('p',null,'اكتب اسم المستخدم وكلمة المرور اللي اتبعتتلك مع الكارت'));
- var iu=el('input'),ip=el('input'),er=el('div','lg-er'),bt=el('button',null,'دخول');
+ var iu=el('input'),ip=el('input'),er=el('div','lg-er'),bt=el('button','lg-go','دخول'),pw=el('div','pw'),eye=el('button','eye');
  iu.placeholder='اسم المستخدم';iu.autocomplete='username';iu.autocapitalize='off';iu.spellcheck=false;iu.dir='ltr';
- ip.placeholder='كلمة المرور';ip.type='password';ip.autocomplete='current-password';ip.dir='ltr';
- bt.type='button';
+ ip.placeholder='كلمة المرور';ip.type='password';ip.autocomplete='current-password';ip.autocapitalize='off';ip.spellcheck=false;ip.dir='ltr';
+ bt.type='button';eye.type='button';eye.setAttribute('aria-label','إظهار كلمة المرور');eye.appendChild(svg('eye'));
+ eye.onclick=function(){var show=ip.type==='password';ip.type=show?'text':'password';eye.textContent='';eye.appendChild(svg(show?'eyeoff':'eye'));eye.classList.toggle('on',show);eye.setAttribute('aria-label',show?'إخفاء كلمة المرور':'إظهار كلمة المرور');ip.focus();try{ip.setSelectionRange(ip.value.length,ip.value.length)}catch(x){}};
  function go(){var a=iu.value,b=ip.value;if(!a||!b){er.textContent='اكتب اسم المستخدم وكلمة المرور';return}
   bt.disabled=true;bt.textContent='...';er.textContent='';
-  openBox(u,a,b).then(function(d){app.textContent='';res(d)},function(e){bt.disabled=false;bt.textContent='دخول';er.textContent=(e&&e.message==='nocrypto')?'افتح الرابط من متصفح حديث (https)':'اسم المستخدم أو كلمة المرور غلط ❌';ip.value='';ip.focus()})}
+  openBox(u,a,b).then(function(d){app.textContent='';res(d)},function(e){bt.disabled=false;bt.textContent='دخول';er.textContent=(e&&e.message==='nocrypto')?'افتح الرابط من متصفح حديث (https)':'اسم المستخدم أو كلمة المرور غلط ❌';ip.focus();try{ip.select()}catch(x){}})}
  bt.onclick=go;iu.onkeydown=ip.onkeydown=function(e){if(e.key==='Enter')go()};
- [iu,ip,bt,er].forEach(function(x){box.appendChild(x)});
+ pw.appendChild(ip);pw.appendChild(eye);
+ [iu,pw,bt,er].forEach(function(x){box.appendChild(x)});
  app.appendChild(box);setTimeout(function(){iu.focus()},50)})}
+function logoutBtn(){var b=el('button','lo-btn');b.type='button';b.appendChild(svg('logout'));b.appendChild(el('span',null,'خروج'));b.onclick=askLogout;return b}
+function askLogout(){
+ var m=$('lo');if(m)m.remove();
+ m=el('div','qm on');m.id='lo';
+ var c=el('div','qc lo');c.appendChild(el('div','qt','تسجيل الخروج؟'));
+ c.appendChild(el('p','lo-p','هتحتاج اسم المستخدم وكلمة المرور علشان تدخل تاني.'));
+ var r=el('div','qa'),ok=el('button','dg','خروج'),no=el('button',null,'إلغاء');
+ ok.type='button';no.type='button';
+ ok.onclick=function(){sessClear();location.reload()};
+ no.onclick=function(){m.remove()};
+ m.onclick=function(e){if(e.target===m)m.remove()};
+ r.appendChild(ok);r.appendChild(no);c.appendChild(r);m.appendChild(c);document.body.appendChild(m)}
 async function load(){
- var h=location.hash.slice(1);if(!h)return null;
+ var h=location.hash.slice(1),s=sessGet();
+ if(!h&&s){h=s.h;try{history.replaceState(null,'',location.pathname+location.search+'#'+h)}catch(e){}}
+ if(!h)return null;
  var u=b64(h.slice(1));
- if(h[0]==='e')return await askLogin(u);
+ if(h[0]==='e'){
+  if(s&&s.h===h){AUTHED=true;RESTORED=true;return s.d}
+  var d=await askLogin(u);AUTHED=true;sessSet(h,d);return d;
+ }
  if(h[0]==='z'){var st=new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate'));return JSON.parse(await new Response(st).text())}
  return JSON.parse(new TextDecoder().decode(u));
 }
@@ -2559,6 +2629,7 @@ function build(d){
  var cover=el('div','cover'),ci=el('i');cover.appendChild(ci);
  if(d.bgp&&/^https:\/\//i.test(d.bgp)){var cb=el('div','cbg');cover.appendChild(cb);loadPic(d.bgp,function(src){if(!src)return;cb.style.backgroundImage='url("'+src+'")';requestAnimationFrame(function(){cb.classList.add('on')})})}
  w.appendChild(cover);
+ if(AUTHED&&!kid)w.appendChild(logoutBtn());
  var mini=el('div','mini');mini.innerHTML=LOGO+'<b class="wm">THALYXIS</b>';w.appendChild(mini);
  var hero=el('div','hero');
  var av=el('div','av'),inn=el('div','in',(d.n||'?').trim().charAt(0).toUpperCase());av.appendChild(inn);hero.appendChild(rv(av));
@@ -2634,6 +2705,7 @@ function build(d){
  app.appendChild(w);app.appendChild(bar);
 }
 load().then(function(d){if(!d||!d.n)throw 0;build(d)}).catch(function(){
+ if(RESTORED)sessClear();
  var e=el('div','err');e.appendChild(el('h2',null,'⚠️ الرابط مش مكتمل'));e.appendChild(el('p',null,'صوّر الـ QR تاني من الكارت.'));$('app').appendChild(e)});
 })();
 function fitCover(){var c=document.querySelector('.cover');if(!c)return;var a=document.querySelector('.acts')||document.querySelector('.hero');if(!a)return;var h=a.offsetTop+a.offsetHeight+14;}
