@@ -106,7 +106,7 @@ h1{margin:0 0 6px;font-size:27px;line-height:1.3;font-weight:800;word-break:brea
 .qc{position:relative;width:100%;max-width:340px;padding:22px 20px 18px;border-radius:16px;text-align:center;background:#101626;border:1px solid rgba(var(--a),.35);box-shadow:0 0 40px rgba(var(--a),.25)}
 .qx{position:absolute;top:8px;left:12px;border:0;background:none;color:var(--mut);font:400 28px/1 Arial,sans-serif;cursor:pointer}
 .qt{font:700 16px "Segoe UI",Tahoma,Arial,sans-serif;margin:0 0 14px;color:rgb(var(--a))}
-.qb{width:236px;height:236px;margin:0 auto 12px;border-radius:12px;overflow:hidden;background:#fff}
+.qb{width:236px;height:236px;margin:0 auto 12px;border-radius:12px;overflow:hidden;background:transparent center/cover no-repeat}
 .qb svg{width:100%;height:100%;display:block}
 .qv{direction:ltr;word-break:break-all;font:500 13px monospace;color:var(--mut);margin-bottom:14px;max-height:50px;overflow:hidden}
 .qa{display:flex;gap:8px}
@@ -2490,18 +2490,18 @@ function ageFrom(d){
  else if(d.b){n=t.getFullYear()-parseInt(d.b,10)}
  if(n==null||isNaN(n)||n<1||n>120)return '';
  return n===1?'سنة واحدة':n===2?'سنتين':(n>=3&&n<=10)?n+' سنوات':n+' سنة'}
-var KIDMODE=false;
+var KIDMODE=false,QBG='';
 function qrSvg(text){
  var q=qrcode(0,'L');q.addData(text);q.make();var n=q.getModuleCount(),m=2,s=n+2*m,p='';
  for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(q.isDark(r,c))p+='M'+(c+m)+' '+(r+m)+'h1v1h-1z';
  var e=document.createElementNS(NS,'svg');e.setAttribute('viewBox','0 0 '+s+' '+s);e.setAttribute('shape-rendering','crispEdges');
- e.innerHTML='<rect width="'+s+'" height="'+s+'" fill="#fff" stroke="none"/><path d="'+p+'" fill="#0a0f1e" stroke="none"/>';return e}
+ e.innerHTML='<rect x="'+m+'" y="'+m+'" width="'+n+'" height="'+n+'" fill="#fff" stroke="none"/><path d="'+p+'" fill="#0a0f1e" stroke="none"/>';return e}
 function showQR(label,val,href){
  var m=$('qm');if(!m){m=el('div','qm');m.id='qm';document.body.appendChild(m);m.onclick=function(e){if(e.target===m)m.classList.remove('on')};document.addEventListener('keydown',function(e){if(e.key==='Escape')m.classList.remove('on')})}
  m.innerHTML='';var c=el('div','qc');
  var x=el('button','qx','\u00d7');x.type='button';x.onclick=function(){m.classList.remove('on')};c.appendChild(x);
  c.appendChild(el('div','qt',label));
- var box=el('div','qb');
+ var box=el('div','qb');if(QBG)box.style.backgroundImage='url("'+QBG+'")';
  try{box.appendChild(qrSvg(href))}catch(err){box.style.cssText+=';display:grid;place-items:center;color:#222;font:600 14px Arial';box.textContent='\u062a\u0639\u0630\u0651\u0631 \u0625\u0646\u0634\u0627\u0621 \u0627\u0644\u0640 QR'}
  c.appendChild(box);
  c.appendChild(el('div','qv',val));
@@ -2515,7 +2515,7 @@ function section(card,title,list){var s=el('div','sec');if(title)s.appendChild(e
 
 function build(d){
  theme(d);document.title=d.n||'Profile';
- var kid=d.k==='k',app=$('app'),w=el('div','wrap');KIDMODE=kid;
+ var kid=d.k==='k',app=$('app'),w=el('div','wrap');KIDMODE=kid;QBG=(d.qb&&/^https:\/\//i.test(d.qb))?d.qb:'';
  var cover=el('div','cover'),ci=el('i');cover.appendChild(ci);w.appendChild(cover);
  var mini=el('div','mini');mini.innerHTML=LOGO+'<b class="wm">THALYXIS</b>';w.appendChild(mini);
  var hero=el('div','hero');
