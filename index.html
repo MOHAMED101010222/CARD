@@ -20,6 +20,13 @@ svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-l
 .cover .cbg{position:absolute;inset:0;background-size:cover;background-position:center top;opacity:0;transition:opacity .9s}.cover .cbg.on{opacity:1}
 .topflag{position:absolute;top:calc(env(safe-area-inset-top,0px) + 22px);right:16px;z-index:5;width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.24);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 4px 16px rgba(0,0,0,.25)}.topflag .fl{width:30px;height:21px;margin:0;border-radius:4px;box-shadow:0 0 0 1px rgba(255,255,255,.3)}
 .pill.pe{gap:7px;padding:7px 14px}.pill.pe .em{font-size:16px;line-height:1}
+.lgn{position:relative;z-index:2;max-width:380px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 13vh) 24px 30px;text-align:center}
+.lgn .lg-ic{font-size:44px;margin-bottom:6px;filter:drop-shadow(0 0 14px rgba(var(--a,255,200,70),.6))}
+.lgn h2{margin:0 0 8px;font-size:24px}.lgn p{margin:0 0 22px;opacity:.7;font-size:14px;line-height:1.8}
+.lgn input{display:block;width:100%;box-sizing:border-box;margin:0 0 12px;padding:14px 16px;border-radius:14px;font:inherit;font-size:16px;color:inherit;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);outline:0;text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.lgn input:focus{border-color:rgb(var(--a,255,200,70));box-shadow:0 0 0 3px rgba(var(--a,255,200,70),.2)}
+.lgn button{width:100%;padding:14px;border:0;border-radius:14px;font:inherit;font-size:16px;font-weight:700;color:#06101c;cursor:pointer;background:linear-gradient(135deg,rgb(var(--a,255,200,70)),rgb(var(--c,255,236,160)))}
+.lgn button:disabled{opacity:.6}.lgn .lg-er{min-height:22px;margin:0 0 12px;color:#ff8a80;font-size:14px}
 .wrap .act .b.x-wa{color:#25d366}.wrap .act .b.x-mail{color:#ffd45e}.wrap .act .b.x-wa svg,.wrap .act .b.x-mail svg{filter:drop-shadow(0 0 7px currentColor) drop-shadow(0 0 2px currentColor)}.wrap .act .b.x-mail svg{stroke-width:2.2}
 .wrap .pill{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.28);-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 6px 18px rgba(0,0,0,.28)}
 .wrap .act:not(.p) .b,.wrap .btn.g{background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.2),0 8px 22px rgba(0,0,0,.32)}
@@ -2449,9 +2456,32 @@ function svg(n,c){var s=document.createElementNS(NS,'svg');s.setAttribute('viewB
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function $(i){return document.getElementById(i)}
 function b64(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+function inflate(u){return new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate'))).text()}
+async function openBox(u,user,pass){
+ if(!(window.crypto&&crypto.subtle))throw new Error('nocrypto');
+ var salt=u.slice(0,8),iv=u.slice(8,20),ct=u.slice(20);
+ var k0=await crypto.subtle.importKey('raw',new TextEncoder().encode(user.trim().toLowerCase()+':'+pass.replace(/[\s-]+/g,'').toLowerCase()),'PBKDF2',false,['deriveKey']);
+ var key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:100000,hash:'SHA-256'},k0,{name:'AES-GCM',length:256},false,['decrypt']);
+ var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:iv},key,ct);
+ return JSON.parse(await inflate(new Uint8Array(pt)));
+}
+function askLogin(u){return new Promise(function(res){
+ var app=$('app');app.textContent='';
+ var box=el('div','lgn');box.appendChild(el('div','lg-ic','🔐'));box.appendChild(el('h2',null,'تسجيل الدخول'));box.appendChild(el('p',null,'اكتب اسم المستخدم وكلمة المرور اللي اتبعتتلك مع الكارت'));
+ var iu=el('input'),ip=el('input'),er=el('div','lg-er'),bt=el('button',null,'دخول');
+ iu.placeholder='اسم المستخدم';iu.autocomplete='username';iu.autocapitalize='off';iu.spellcheck=false;iu.dir='ltr';
+ ip.placeholder='كلمة المرور';ip.type='password';ip.autocomplete='current-password';ip.dir='ltr';
+ bt.type='button';
+ function go(){var a=iu.value,b=ip.value;if(!a||!b){er.textContent='اكتب اسم المستخدم وكلمة المرور';return}
+  bt.disabled=true;bt.textContent='...';er.textContent='';
+  openBox(u,a,b).then(function(d){app.textContent='';res(d)},function(e){bt.disabled=false;bt.textContent='دخول';er.textContent=(e&&e.message==='nocrypto')?'افتح الرابط من متصفح حديث (https)':'اسم المستخدم أو كلمة المرور غلط ❌';ip.value='';ip.focus()})}
+ bt.onclick=go;iu.onkeydown=ip.onkeydown=function(e){if(e.key==='Enter')go()};
+ [iu,ip,bt,er].forEach(function(x){box.appendChild(x)});
+ app.appendChild(box);setTimeout(function(){iu.focus()},50)})}
 async function load(){
  var h=location.hash.slice(1);if(!h)return null;
  var u=b64(h.slice(1));
+ if(h[0]==='e')return await askLogin(u);
  if(h[0]==='z'){var st=new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate'));return JSON.parse(await new Response(st).text())}
  return JSON.parse(new TextDecoder().decode(u));
 }
