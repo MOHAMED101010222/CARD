@@ -2543,10 +2543,22 @@ function askLogout(){
  no.onclick=function(){m.remove()};
  m.onclick=function(e){if(e.target===m)m.remove()};
  r.appendChild(ok);r.appendChild(no);c.appendChild(r);m.appendChild(c);document.body.appendChild(m)}
+async function fetchCard(id,kb){
+ if(!(window.crypto&&crypto.subtle))throw new Error('nocrypto');
+ var key=await crypto.subtle.importKey('raw',kb,'AES-GCM',false,['decrypt']);
+ for(var i=0;i<45;i++){
+  var r=null;try{r=await fetch('cards/'+id+'.bin?t='+Date.now(),{cache:'no-store'})}catch(e){}
+  if(r&&r.ok){var u=new Uint8Array(await r.arrayBuffer());var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(0,12)},key,u.slice(12));return new TextDecoder().decode(pt)}
+  if(i===0){var a=$('app');a.textContent='';var e0=el('div','err');e0.appendChild(el('h2',null,'⏳ جاري تجهيز الكارت'));e0.appendChild(el('p',null,'ثواني وهيفتح لوحده...'));a.appendChild(e0)}
+  await new Promise(function(z){setTimeout(z,4000)});
+ }
+ throw 0;
+}
 async function load(){
  var h=location.hash.slice(1),s=sessGet();
  if(!h&&s){h=s.h;try{history.replaceState(null,'',location.pathname+location.search+'#'+h)}catch(e){}}
  if(!h)return null;
+ if(h[0]==='k'&&h.length>=33){h=await fetchCard(h.slice(1,11),b64(h.slice(11,33)));$('app').textContent=''}
  var u=b64(h.slice(1));
  if(h[0]==='e'){
   if(s&&s.h===h){AUTHED=true;RESTORED=true;return s.d}
@@ -2645,7 +2657,7 @@ function build(d){
  hero.appendChild(rv(el('h1',null,d.n||'—')));
  if(d.t)hero.appendChild(rv(el('div','role',d.t)));
  var pills=el('div','pills');
- if(kid){if(d.ag)pill(pills,'cake',d.ag);if(d.sc)pill(pills,'cap',d.sc)}
+ if(kid){if(d.ag)pill(pills,'cake',d.ag);if(d.bd)pill(pills,'cake',d.bd);if(d.sc)pill(pills,'cap',d.sc);if(d.cf&&/^[a-z]{2}$/.test(d.cf)){var tfk=el('div','topflag');tfk.appendChild(flagImg(d.cf));w.appendChild(tfk)}}
  else{
   if(d.cf&&/^[a-z]{2}$/.test(d.cf)){var tf=el('div','topflag');tf.appendChild(flagImg(d.cf));w.appendChild(tf)}
   if(d.s)pillE(pills,'🎓','التخصص',d.s);
@@ -2668,6 +2680,9 @@ function build(d){
   var l=el('div','rows');
   [['p1','واتساب · ولي الأمر'],['p2','واتساب · ولي الأمر (2)']].forEach(function(p){if(d[p[0]])tile(l,'chat',p[1],d[p[0]],wa(d[p[0]]))});
   if(l.children.length)section(w,'// CONTACT',l);
+  if(d.ad){var al=el('div','rows'),ap=d.ad.split('،').map(function(x){return x.trim()}).filter(Boolean),an=['المنطقة','المدينة','البلد'].slice(3-ap.length);
+   if(ap.length>3||!ap.length){an=['العنوان'];ap=[d.ad]}
+   ap.forEach(function(v,i){tile(al,'pin',an[i],v,'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.ad))});section(w,'// ADDRESS',al)}
   if(d.nt)w.appendChild(rv(el('div','note','⚠️ ملحوظة: '+d.nt)));
   if(d.p1){var c1=el('a','btn call2');lnk(c1,'tel:'+digits(d.p1));c1.appendChild(svg('phone'));c1.appendChild(el('span',null,'اتصل بولي الأمر'));bi.appendChild(c1)}
   var sh=el('button','btn g');sh.type='button';sh.appendChild(svg('share'));sh.onclick=function(){share(d)};bi.appendChild(sh);
@@ -2681,7 +2696,9 @@ function build(d){
   if(ac.children.length)w.appendChild(rv(ac));
   if(d.ab&&/[\w\u0600-\u06FF]/.test(d.ab)){var ab=el('div','sec');ab.appendChild(el('div','about',d.ab));w.appendChild(rv(ab))}
   var rows=el('div','rows'),n0=0;
+  if(d.t){tile(rows,'job','الوظيفة',d.t);n0++}
   if(d.wk){tile(rows,'job','مكان العمل',d.wk);n0++}
+  if(d.wad){tile(rows,'pin','عنوان العمل',d.wad,'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.wad));n0++}
   if(d.ph){tile(rows,'phone','موبايل',d.ph,'tel:'+digits(d.ph));n0++}
   if(d.wa){tile(rows,'chat','واتساب',d.wa,wa(d.wa));n0++}
   if(d.em){tile(rows,'mail','البريد الإلكتروني',d.em,'mailto:'+d.em);n0++}
