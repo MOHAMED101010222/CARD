@@ -2543,14 +2543,19 @@ function askLogout(){
  no.onclick=function(){m.remove()};
  m.onclick=function(e){if(e.target===m)m.remove()};
  r.appendChild(ok);r.appendChild(no);c.appendChild(r);m.appendChild(c);document.body.appendChild(m)}
+function getBin(id){
+ var t=Date.now(),L=location,o=L.hostname.split('.')[0],r=L.pathname.split('/')[1]||'',us=['cards/'+id+'.bin?t='+t];
+ if(/\.github\.io$/i.test(L.hostname)&&r)us.push('https://raw.githubusercontent.com/'+o+'/'+r+'/HEAD/cards/'+id+'.bin?t='+t);
+ return new Promise(function(ok,no){var n=us.length;us.forEach(function(u){fetch(u,{cache:'no-store'}).then(function(x){return x.ok?x.arrayBuffer():Promise.reject()}).then(ok,function(){if(--n===0)no()})})})
+}
 async function fetchCard(id,kb){
  if(!(window.crypto&&crypto.subtle))throw new Error('nocrypto');
  var key=await crypto.subtle.importKey('raw',kb,'AES-GCM',false,['decrypt']);
- for(var i=0;i<45;i++){
-  var r=null;try{r=await fetch('cards/'+id+'.bin?t='+Date.now(),{cache:'no-store'})}catch(e){}
-  if(r&&r.ok){var u=new Uint8Array(await r.arrayBuffer());var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(0,12)},key,u.slice(12));return new TextDecoder().decode(pt)}
-  if(i===0){var a=$('app');a.textContent='';var e0=el('div','err');e0.appendChild(el('h2',null,'⏳ جاري تجهيز الكارت'));e0.appendChild(el('p',null,'ثواني وهيفتح لوحده...'));a.appendChild(e0)}
-  await new Promise(function(z){setTimeout(z,4000)});
+ for(var i=0;i<80;i++){
+  var buf=null;try{buf=await getBin(id)}catch(e){}
+  if(buf){var u=new Uint8Array(buf);var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(0,12)},key,u.slice(12));return new TextDecoder().decode(pt)}
+  if(i===3){var a=$('app');a.textContent='';var e0=el('div','err');e0.appendChild(el('h2',null,'جاري فتح الكارت…'));e0.appendChild(el('p',null,'لحظات...'));a.appendChild(e0)}
+  await new Promise(function(z){setTimeout(z,1200)});
  }
  throw 0;
 }
@@ -2724,6 +2729,41 @@ function build(d){
 load().then(function(d){if(!d||!d.n)throw 0;build(d)}).catch(function(){
  if(RESTORED)sessClear();
  var e=el('div','err');e.appendChild(el('h2',null,'⚠️ الرابط مش مكتمل'));e.appendChild(el('p',null,'صوّر الـ QR تاني من الكارت.'));$('app').appendChild(e)});
+})();
+(function(){
+var LINES=['Attention. Identity card detected.','Initializing secure connection.','Welcome to Thalyxis.','You are now viewing a holographic identity card, from the year three thousand.','Scanning credentials. Verification complete.','This card was designed to be shared, scanned, and carried into the future.','The future is not something we wait for. It is something we build.','Thank you for connecting with us. Welcome, and have a productive day.'];
+var AC=window.AudioContext||window.webkitAudioContext,ctx=null,playing=false,done=false,tk=0,chip=null;
+function ss(){return window.speechSynthesis}
+try{if(sessionStorage.getItem('wlc')==='1')done=true}catch(e){}
+function beep(f1,f2,d){try{if(!AC)return;ctx=ctx||new AC();var o=ctx.createOscillator(),g=ctx.createGain(),t=ctx.currentTime;o.type='sine';o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.16,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+d);o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+d+0.02)}catch(e){}}
+function voice(){var v=(ss().getVoices()||[]).filter(function(x){return /^en/i.test(x.lang)});
+ var pick=v.filter(function(x){return /Google US English|Zira|Aria|Jenny|Samantha|Female/i.test(x.name)})[0];return pick||v[0]||null}
+function label(){if(!chip)return;chip.textContent=playing?'⏹ Stop':'🔊 Welcome';chip.style.opacity=playing?'1':'.85'}
+function stop(){tk++;playing=false;try{ss().cancel()}catch(e){}label()}
+function finish(my){if(my!==tk)return;playing=false;done=true;try{sessionStorage.setItem('wlc','1')}catch(e){}label()}
+function run(my,i){
+ if(my!==tk)return;if(i>=LINES.length){beep(1320,660,.35);return finish(my)}
+ beep(i%2?740:990,i%2?1100:1480,.14);
+ setTimeout(function(){
+  if(my!==tk)return;var u=new SpeechSynthesisUtterance(LINES[i]),v=voice(),nx=false;
+  u.lang='en-US';if(v)u.voice=v;u.rate=.92;u.pitch=.62;u.volume=1;
+  var go=function(){if(nx||my!==tk)return;nx=true;setTimeout(function(){run(my,i+1)},180)};
+  u.onend=go;u.onerror=go;setTimeout(go,9000);
+  try{ss().speak(u)}catch(e){go()}
+ },230)}
+function start(){if(playing||!ss()||typeof SpeechSynthesisUtterance==='undefined')return;
+ try{ctx=ctx||(AC&&new AC());if(ctx&&ctx.state==='suspended')ctx.resume()}catch(e){}
+ try{ss().cancel()}catch(e){}playing=true;label();run(++tk,0)}
+function mk(){
+ if(!ss()||typeof SpeechSynthesisUtterance==='undefined')return;
+ chip=document.createElement('button');chip.type='button';
+ chip.style.cssText='position:fixed;z-index:50;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(8,12,24,.72);color:#e8f6ff;font:600 12px/1 Segoe UI,Tahoma,Arial,sans-serif;letter-spacing:.4px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer';
+ chip.onclick=function(e){e.stopPropagation();playing?stop():start()};label();document.body.appendChild(chip);
+ if(!done){var first=function(e){if(chip&&e&&e.target===chip)return;['pointerdown','keydown','touchstart'].forEach(function(n){window.removeEventListener(n,first,true)});if(!done&&!playing)start()};
+  ['pointerdown','keydown','touchstart'].forEach(function(n){window.addEventListener(n,first,true)});
+  try{start()}catch(e){}}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mk);else mk();
 })();
 function fitCover(){var c=document.querySelector('.cover');if(!c)return;var a=document.querySelector('.acts')||document.querySelector('.hero');if(!a)return;var h=a.offsetTop+a.offsetHeight+14;}
 fitCover();setTimeout(fitCover,300);setTimeout(fitCover,1200);window.addEventListener('load',fitCover);window.addEventListener('resize',fitCover);
