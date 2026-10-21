@@ -138,7 +138,8 @@ h1{margin:0 0 6px;font-size:27px;line-height:1.3;font-weight:800;word-break:brea
 .lb img{max-width:92vw;max-height:84vh;border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
 .toast{position:fixed;z-index:30;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;padding:10px 20px;border-radius:999px;background:#1b2133;border:1px solid var(--line);font-size:14px;transition:.3s;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-.rv{opacity:0;animation:up .6s cubic-bezier(.2,.8,.2,1) forwards}
+.rv{animation:up .6s cubic-bezier(.2,.8,.2,1) backwards;animation-play-state:paused}
+body.go .rv{animation-play-state:running}
 @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .err{position:relative;z-index:2;text-align:center;padding:30vh 24px 0}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important}}
@@ -390,6 +391,7 @@ var SH=[
 /* بعد ما العرض يخلص يفتح صفحة البروفايل على طول (ومعاه بيانات الكارت اللي بعد #) */
 var PROFILE='index.html';   /* اسم صفحة البروفايل اللي في نفس الفولدر (viewer.html لو بتستخدمها) */
 function openProfile(){try{sessionStorage.setItem('thx_intro','1')}catch(e){}
+ if(window.parent&&window.parent!==window){try{window.parent.postMessage('thx-done','*');return}catch(e){}}
  try{var u=new URL(PROFILE,location.href);u.search=location.search;u.hash=location.hash;location.replace(u.href)}catch(e){location.replace(PROFILE+location.hash)}}
 async function main(){
  /* شاشة سودا + زرار دخول: الضغطة بتفتح الصوت (قيود المتصفح)، وبعدها يبدأ العرض */
@@ -411,13 +413,13 @@ main().catch(function(){MUS.stop(1);openProfile()});
 </script>
 <script>
 (function(){
-if(!('srcdoc' in document.createElement('iframe')))return;
+if(!('srcdoc' in document.createElement('iframe'))){document.body.classList.add('go');return}
 var f=document.createElement('iframe'),gone=false;
 f.setAttribute('allow','autoplay');f.setAttribute('title','THALYXIS');
 f.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147483000;background:#000;transition:opacity 1.2s ease';
 function done(){if(gone)return;gone=true;try{sessionStorage.setItem('thx_intro','1')}catch(e){}
  try{f.contentWindow.speechSynthesis.cancel()}catch(e){}
- f.style.opacity='0';setTimeout(function(){f.remove()},1300)}
+ setTimeout(function(){document.body.classList.add('go')},300);f.style.opacity='0';setTimeout(function(){f.remove()},1300)}
 addEventListener('message',function(e){if(e.data==='thx-done')done()});
 f.srcdoc=document.getElementById('wl-src').textContent.split('<\\/script').join('</script');
 document.body.appendChild(f);
@@ -2837,7 +2839,7 @@ function wa(p){var d=p.replace(/\D/g,'');if(/^01\d{9}$/.test(d))d='20'+d.slice(1
 function url(w){w=String(w).trim();return /^https?:\/\//i.test(w)?w:'https://'+w}
 function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.k);toast.k=setTimeout(function(){t.classList.remove('on')},1800)}
 function copy(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast('تم النسخ')},function(){toast(t)});else toast(t)}
-var N=0;function rv(n){n.classList.add('rv');n.style.animationDelay=(0.08*(N++))+'s';return n}
+var N=0;function rv(n){n.classList.add('rv');n.style.animationDelay=(0.14*(N++))+'s';return n}
 function lnk(a,h){a.href=h;if(/^https?:/.test(h)){a.target='_blank';a.rel='noopener noreferrer'}}
 function theme(d){var r=document.documentElement.style;if(d.a)r.setProperty('--a',d.a);if(d.c)r.setProperty('--c',d.c)}
 
@@ -2898,7 +2900,7 @@ function showQR(label,val,href){
  var sh=el('button');sh.type='button';sh.appendChild(svg('share'));sh.appendChild(el('span',null,'\u0645\u0634\u0627\u0631\u0643\u0629'));
  sh.onclick=function(){if(navigator.share)navigator.share({title:label,url:href}).catch(function(){});else copy(href)};bt.appendChild(sh);
  c.appendChild(bt);m.appendChild(c);m.classList.add('on')}
-function section(card,title,list){var s=el('div','sec');if(title)s.appendChild(el('div','lbl',title));s.appendChild(list);card.appendChild(rv(s))}
+function section(card,title,list){var s=el('div','sec');if(title)s.appendChild(rv(el('div','lbl',title)));[].slice.call(list.children).forEach(rv);s.appendChild(list);card.appendChild(s)}
 
 function build(d){
  theme(d);document.title=d.n||'Profile';
@@ -2984,7 +2986,7 @@ function build(d){
   var qb=el('button','btn g');qb.type='button';qb.appendChild(svg('qr'));qb.onclick=function(){showQR(d.n||'Profile','رابط الصفحة',location.href)};bi.appendChild(qb);
  }
  w.appendChild(el('div','id',d.id?('ID '+d.id+' · ONLINE'):'● ONLINE'));
- app.appendChild(w);app.appendChild(bar);
+ app.appendChild(w);app.appendChild(rv(bar));
 }
 load().then(function(d){if(!d||!d.n)throw 0;build(d)}).catch(function(){
  if(RESTORED)sessClear();
