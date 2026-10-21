@@ -411,8 +411,7 @@ main().catch(function(){MUS.stop(1);openProfile()});
 </script>
 <script>
 (function(){
-var seen=false;try{seen=sessionStorage.getItem('thx_intro')==='1'}catch(e){}
-if(seen||!('srcdoc' in document.createElement('iframe')))return;
+if(!('srcdoc' in document.createElement('iframe')))return;
 var f=document.createElement('iframe'),gone=false;
 f.setAttribute('allow','autoplay');f.setAttribute('title','THALYXIS');
 f.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147483000;background:#000;transition:opacity 1.2s ease';
@@ -2989,7 +2988,9 @@ function build(d){
 }
 load().then(function(d){if(!d||!d.n)throw 0;build(d)}).catch(function(){
  if(RESTORED)sessClear();
- var e=el('div','err');e.appendChild(el('h2',null,'⚠️ الرابط مش مكتمل'));e.appendChild(el('p',null,'صوّر الـ QR تاني من الكارت.'));$('app').appendChild(e)});
+ var e=el('div','err');e.appendChild(el('h2',null,'⚠️ الرابط مش مكتمل'));e.appendChild(el('p',null,'صوّر الـ QR تاني من الكارت.'));
+ var h0=location.hash.slice(1),dg=el('p',null,(!h0?'no card data in this link (nothing after #)':(h0[0]==='k'?'hosted card: file not found or cannot be decrypted':(/^[ez]/.test(h0)?'inline card: cannot decode':'unknown link type')))+' ['+(h0?h0[0]+':'+h0.length:'0')+']');
+ dg.style.cssText='font:11px monospace;opacity:.55;direction:ltr;margin-top:18px;word-break:break-all';e.appendChild(dg);$('app').appendChild(e)});
 })();
 function fitCover(){var c=document.querySelector('.cover');if(!c)return;var a=document.querySelector('.acts')||document.querySelector('.hero');if(!a)return;var h=a.offsetTop+a.offsetHeight+14;}
 fitCover();setTimeout(fitCover,300);setTimeout(fitCover,1200);window.addEventListener('load',fitCover);window.addEventListener('resize',fitCover);
